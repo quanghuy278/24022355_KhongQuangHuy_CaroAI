@@ -1,6 +1,7 @@
 # src/ui/gui.py
 import pygame
 import sys
+import config
 from config import BOARD_SIZE, PLAYER_X, PLAYER_O, EMPTY, BG_COLOR, GRID_COLOR, X_COLOR, O_COLOR, TEXT_COLOR
 
 CELL_SIZE = 50
@@ -17,8 +18,45 @@ class GUI:
         self.font = pygame.font.SysFont("arial", 24)
         self.large_font = pygame.font.SysFont("arial", 32, bold=True)
         self.restart_rect = None
+        self.algo_rect = None
+        self.state = "MENU" # "MENU" or "PLAYING"
+        self.title_font = pygame.font.SysFont("arial", 48, bold=True)
         
-    def draw_board(self):
+        # Các nút của màn hình Menu
+        btn_w, btn_h = 300, 60
+        self.menu_minimax_rect = pygame.Rect(WIDTH//2 - btn_w//2, HEIGHT//2 - 40, btn_w, btn_h)
+        self.menu_alphabeta_rect = pygame.Rect(WIDTH//2 - btn_w//2, HEIGHT//2 + 40, btn_w, btn_h)
+
+    def draw(self):
+        if self.state == "MENU":
+            self.draw_menu()
+        else:
+            self.draw_playing()
+
+    def draw_menu(self):
+        self.screen.fill(BG_COLOR)
+        
+        title_text = self.title_font.render("CARO AI", True, TEXT_COLOR)
+        self.screen.blit(title_text, (WIDTH//2 - title_text.get_width()//2, HEIGHT//2 - 150))
+        
+        subtitle_text = self.font.render("CHE DO AI:", True, TEXT_COLOR)
+        self.screen.blit(subtitle_text, (WIDTH//2 - subtitle_text.get_width()//2, HEIGHT//2 - 80))
+        
+        # Nút Minimax
+        pygame.draw.rect(self.screen, (100, 150, 200), self.menu_minimax_rect, border_radius=8)
+        pygame.draw.rect(self.screen, (50, 100, 150), self.menu_minimax_rect, 3, border_radius=8)
+        mm_text = self.font.render("MINIMAX", True, (255, 255, 255))
+        self.screen.blit(mm_text, (self.menu_minimax_rect.x + (self.menu_minimax_rect.width - mm_text.get_width())//2, self.menu_minimax_rect.y + (self.menu_minimax_rect.height - mm_text.get_height())//2))
+        
+        # Nút Alpha-Beta
+        pygame.draw.rect(self.screen, (200, 100, 100), self.menu_alphabeta_rect, border_radius=8)
+        pygame.draw.rect(self.screen, (150, 50, 50), self.menu_alphabeta_rect, 3, border_radius=8)
+        ab_text = self.font.render("ALPHA-BETA", True, (255, 255, 255))
+        self.screen.blit(ab_text, (self.menu_alphabeta_rect.x + (self.menu_alphabeta_rect.width - ab_text.get_width())//2, self.menu_alphabeta_rect.y + (self.menu_alphabeta_rect.height - ab_text.get_height())//2))
+        
+        pygame.display.flip()
+        
+    def draw_playing(self):
         self.screen.fill(BG_COLOR)
         
         # Vẽ lưới
@@ -83,7 +121,7 @@ class GUI:
             
             if self.game.last_ai_time > 0:
                 stats = self.font.render(f"AI: {self.game.last_ai_time:.0f}ms | Duyet: {self.game.last_ai_nodes} nodes", True, TEXT_COLOR)
-                self.screen.blit(stats, (MARGIN, status_y + 30))
+                self.screen.blit(stats, (WIDTH//2 - stats.get_width()//2, status_y + 30))
                 
         self.screen.blit(text, (WIDTH//2 - text.get_width()//2, status_y))
         pygame.display.flip()
@@ -109,14 +147,24 @@ class GUI:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
                 
-                # Nếu game đã kết thúc, kiểm tra xem click vào nút chơi lại không
-                if self.game.is_game_over:
-                    if self.restart_rect and self.restart_rect.collidepoint(x, y):
+                if self.state == "MENU":
+                    if self.menu_minimax_rect.collidepoint(x, y):
+                        config.AI_ALGO = "minimax"
+                        self.state = "PLAYING"
                         self.game.reset()
-                
-                # Nếu game chưa kết thúc và đang là lượt người chơi
-                elif not self.game.is_game_over and self.game.current_player == PLAYER_X:
-                    if MARGIN <= x <= MARGIN + BOARD_SIZE * CELL_SIZE and MARGIN <= y <= MARGIN + BOARD_SIZE * CELL_SIZE:
-                        col = (x - MARGIN) // CELL_SIZE
-                        row = (y - MARGIN) // CELL_SIZE
-                        self.game.handle_human_move(row, col)
+                    elif self.menu_alphabeta_rect.collidepoint(x, y):
+                        config.AI_ALGO = "alphabeta"
+                        self.state = "PLAYING"
+                        self.game.reset()
+                else:
+                    # Nếu game đã kết thúc, kiểm tra xem click vào nút chơi lại không
+                    if self.game.is_game_over:
+                        if self.restart_rect and self.restart_rect.collidepoint(x, y):
+                            self.game.reset()
+                            self.state = "MENU" # Về lại màn hình menu khi bấm chơi lại
+                    # Nếu game chưa kết thúc và đang là lượt người chơi
+                    elif not self.game.is_game_over and self.game.current_player == PLAYER_X:
+                        if MARGIN <= x <= MARGIN + BOARD_SIZE * CELL_SIZE and MARGIN <= y <= MARGIN + BOARD_SIZE * CELL_SIZE:
+                            col = (x - MARGIN) // CELL_SIZE
+                            row = (y - MARGIN) // CELL_SIZE
+                            self.game.handle_human_move(row, col)

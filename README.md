@@ -24,9 +24,6 @@ Bạn có thể cấu hình độ sâu tìm kiếm bằng tham số `--depth` (t
 ```bash
 # Cấu hình độ sâu tìm kiếm là 2
 python main.py --depth 2
-
-# Ngoài ra, cũng có thể cấu hình tham số thuật toán (mặc dù Menu vẫn sẽ hiển thị)
-python main.py --algo minimax --depth 2
 ```
 
 **3. Chạy chương trình kiểm thử (Benchmark)**

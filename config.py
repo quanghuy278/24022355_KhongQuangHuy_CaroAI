@@ -3,7 +3,7 @@
 BOARD_SIZE = 9       # Kích thước bàn cờ (N×N)
 WIN_LENGTH = 4       # Số quân liên tiếp để chiến thắng
 MAX_DEPTH = 3        # Độ sâu tìm kiếm mặc định
-AI_ALGO = "alphabeta" # Thuật toán mặc định: "minimax" | "alphabeta"
+AI_ALGO = None       # Thuật toán sẽ được chọn thông qua giao diện menu
 CANDIDATE_RADIUS = 1  # Bán kính tìm kiếm nước đi quanh các quân đã đánh
 
 # Ký hiệu trên bàn cờ

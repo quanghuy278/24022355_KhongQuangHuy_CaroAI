@@ -79,20 +79,50 @@ def get_lines(board):
             
     return lines
 
-def evaluate(board):
+import config
+
+def evaluate(board, is_maximizing=None):
     """
     Tính điểm của trạng thái bàn cờ.
     Bởi vì AI là PLAYER_O (Max), Người chơi là PLAYER_X (Min).
     Score > 0 có lợi cho AI, Score < 0 có lợi cho người chơi.
+    Trả về (score, is_volatile)
+    is_volatile = True nếu bàn cờ đang ở trạng thái có đe dọa trực tiếp (vd: Open 3)
     """
     score = 0
     lines = get_lines(board)
     
+    ai_score_raw = 0
+    player_score_raw = 0
+    
+    is_volatile = False
+    
     for line in lines:
-        # Điểm của máy
-        score += evaluate_line(line, PLAYER_O, PLAYER_X)
-        # Điểm của người (trừ đi)
-        # Sử dụng trọng số cao hơn một chút cho người chơi để AI ưu tiên phòng thủ khi người chơi sắp thắng
-        score -= evaluate_line(line, PLAYER_X, PLAYER_O) * 1.1 
+        ai_val = evaluate_line(line, PLAYER_O, PLAYER_X)
+        player_val = evaluate_line(line, PLAYER_X, PLAYER_O)
         
-    return score
+        ai_score_raw += ai_val
+        player_score_raw += player_val
+        
+        # Kiểm tra tính biến động khốc liệt (có đe dọa sinh tử)
+        if ai_val >= SCORES["OPEN_3"] or player_val >= SCORES["OPEN_3"]:
+            is_volatile = True
+
+    if getattr(config, 'USE_ADVANCED_HEURISTIC', False) and is_maximizing is not None:
+        # TÍNH QUYỀN CHỦ ĐỘNG (INITIATIVE)
+        # Nếu is_maximizing = True => Lượt tiếp theo là của AI (Max). Nghĩa là Người chơi vừa đi xong.
+        # Nếu is_maximizing = False => Lượt tiếp theo là của Người (Min). Nghĩa là AI vừa đi xong.
+        
+        if is_maximizing:
+            # Tới lượt AI đi. AI có quyền chủ động.
+            # Nếu AI có OPEN_3, AI sẽ thắng ngay, thưởng mạnh.
+            score = ai_score_raw * 1.5 - player_score_raw * 1.1
+        else:
+            # Tới lượt người chơi đi. Người chơi có quyền chủ động.
+            score = ai_score_raw * 1.0 - player_score_raw * 1.5
+    else:
+        # Chế độ tĩnh mặc định
+        score = ai_score_raw - player_score_raw * 1.1 
+        
+    return score, is_volatile
+

@@ -5,6 +5,7 @@ WIN_LENGTH = 4       # Số quân liên tiếp để chiến thắng
 MAX_DEPTH = 3        # Độ sâu tìm kiếm mặc định
 AI_ALGO = None       # Thuật toán sẽ được chọn thông qua giao diện menu
 CANDIDATE_RADIUS = 1  # Bán kính tìm kiếm nước đi quanh các quân đã đánh
+USE_ADVANCED_HEURISTIC = False # Bật/Tắt AI Nâng Cao (Thêm điểm quyền chủ động & Mở rộng nhánh)
 
 # Ký hiệu trên bàn cờ
 PLAYER_X = 'X' # Người

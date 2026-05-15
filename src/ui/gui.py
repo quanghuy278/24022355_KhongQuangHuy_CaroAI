@@ -28,6 +28,8 @@ class GUI:
         
         self.btn_minus_rect = pygame.Rect(WIDTH//2 - 60, HEIGHT//2 + 150, 40, 40)
         self.btn_plus_rect = pygame.Rect(WIDTH//2 + 20, HEIGHT//2 + 150, 40, 40)
+        
+        self.btn_adv_rect = pygame.Rect(WIDTH//2 - 140, HEIGHT//2 + 210, 280, 45)
 
     def draw(self):
         mouse_pos = pygame.mouse.get_pos()
@@ -71,6 +73,10 @@ class GUI:
         depth_val = self.large_font.render(str(config.MAX_DEPTH), True, TEXT_COLOR)
         self.screen.blit(depth_val, (WIDTH//2 - depth_val.get_width()//2, HEIGHT//2 + 152))
         draw_btn(self.btn_plus_rect, "+", self.btn_plus_rect.collidepoint(mouse_pos))
+        
+        # Nút AI Nâng Cao
+        adv_text = "AI NÂNG CAO: BẬT" if config.USE_ADVANCED_HEURISTIC else "AI NÂNG CAO: TẮT"
+        draw_btn(self.btn_adv_rect, adv_text, self.btn_adv_rect.collidepoint(mouse_pos))
         
         pygame.display.flip()
         
@@ -226,6 +232,8 @@ class GUI:
                         config.MAX_DEPTH = max(1, config.MAX_DEPTH - 1)
                     elif self.btn_plus_rect.collidepoint(x, y):
                         config.MAX_DEPTH = min(5, config.MAX_DEPTH + 1)
+                    elif self.btn_adv_rect.collidepoint(x, y):
+                        config.USE_ADVANCED_HEURISTIC = not config.USE_ADVANCED_HEURISTIC
                 else:
                     if self.game.is_game_over:
                         if getattr(self, 'restart_rect', None) and self.restart_rect.collidepoint(x, y):

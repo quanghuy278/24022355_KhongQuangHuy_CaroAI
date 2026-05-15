@@ -10,7 +10,7 @@ class AlphaBetaResult:
         self.states_visited = states_visited
         self.time_ms = time_ms
 
-def alphabeta_recursive(board, depth, alpha, beta, is_maximizing):
+def alphabeta_recursive(board, depth, alpha, beta, is_maximizing, extensions=0):
     """Hàm đệ quy trả về (move, score, states_visited)"""
     is_over, winner = board.is_game_over()
     if is_over:
@@ -18,8 +18,19 @@ def alphabeta_recursive(board, depth, alpha, beta, is_maximizing):
         elif winner == PLAYER_X: return None, -10000000 - depth, 1
         else: return None, 0, 1
         
-    if depth == 0:
-        return None, evaluate(board), 1
+    import config
+    if depth <= 0:
+        score, is_volatile = evaluate(board, is_maximizing)
+        # Search Extension: Mở rộng nhánh cục bộ nếu cờ đang biến động
+        if getattr(config, 'USE_ADVANCED_HEURISTIC', False):
+            if is_volatile and extensions < 2:
+                # Không return ngay mà nới thêm depth
+                depth += 1
+                extensions += 1
+            else:
+                return None, score, 1
+        else:
+            return None, score, 1
         
     candidates = board.get_candidate_moves()
     if not candidates:
@@ -32,7 +43,7 @@ def alphabeta_recursive(board, depth, alpha, beta, is_maximizing):
         best_score = -float('inf')
         for r, c in candidates:
             board.make_move(r, c, PLAYER_O)
-            _, score, child_states = alphabeta_recursive(board, depth - 1, alpha, beta, False)
+            _, score, child_states = alphabeta_recursive(board, depth - 1, alpha, beta, False, extensions)
             board.grid[r][c] = '.'
             board.move_count -= 1
             states_visited += child_states
@@ -48,7 +59,7 @@ def alphabeta_recursive(board, depth, alpha, beta, is_maximizing):
         best_score = float('inf')
         for r, c in candidates:
             board.make_move(r, c, PLAYER_X)
-            _, score, child_states = alphabeta_recursive(board, depth - 1, alpha, beta, True)
+            _, score, child_states = alphabeta_recursive(board, depth - 1, alpha, beta, True, extensions)
             board.grid[r][c] = '.'
             board.move_count -= 1
             states_visited += child_states

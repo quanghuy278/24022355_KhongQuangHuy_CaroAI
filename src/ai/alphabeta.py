@@ -23,7 +23,7 @@ def alphabeta_recursive(board, depth, alpha, beta, is_maximizing, extensions=0):
         score, is_volatile = evaluate(board, is_maximizing)
         # Search Extension: Mở rộng nhánh cục bộ nếu cờ đang biến động
         if getattr(config, 'USE_ADVANCED_HEURISTIC', False):
-            if is_volatile and extensions < 2:
+            if is_volatile and extensions < 1:
                 # Không return ngay mà nới thêm depth
                 depth += 1
                 extensions += 1

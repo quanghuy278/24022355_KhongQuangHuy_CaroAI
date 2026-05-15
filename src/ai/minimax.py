@@ -73,7 +73,7 @@ def minimax_recursive(board, depth, is_maximizing, extensions=0):
         score, is_volatile = evaluate(board, is_maximizing)
         # Search Extension
         if getattr(config, 'USE_ADVANCED_HEURISTIC', False):
-            if is_volatile and extensions < 2:
+            if is_volatile and extensions < 1:
                 depth += 1
                 extensions += 1
             else:

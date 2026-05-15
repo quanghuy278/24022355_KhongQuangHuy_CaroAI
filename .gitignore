@@ -1,21 +1,17 @@
-# Môi trường ảo Python
+
 .venv/
 venv/
 env/
 
-# Files rác của Python (Compiled)
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Files cấu hình của các IDE/Editor
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# MacOS rác
 .DS_Store
 
-# Logs
 *.log

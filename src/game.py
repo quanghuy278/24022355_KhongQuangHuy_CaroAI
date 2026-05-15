@@ -13,6 +13,8 @@ class Game:
         self.use_gui = use_gui
         self.last_ai_time = 0
         self.last_ai_nodes = 0
+        self.last_move = None
+        self.win_coords = None
         
     def reset(self):
         self.board = Board()
@@ -21,6 +23,8 @@ class Game:
         self.winner = None
         self.last_ai_time = 0
         self.last_ai_nodes = 0
+        self.last_move = None
+        self.win_coords = None
         
     def switch_turn(self):
         self.current_player = config.PLAYER_O if self.current_player == config.PLAYER_X else config.PLAYER_X
@@ -30,9 +34,12 @@ class Game:
         if is_over:
             self.is_game_over = True
             self.winner = winner
+            if winner:
+                self.win_coords = self.board.get_winning_line(winner)
             
     def handle_human_move(self, row, col):
         if self.board.make_move(row, col, config.PLAYER_X):
+            self.last_move = (row, col)
             self.check_game_state()
             if not self.is_game_over:
                 self.switch_turn()
@@ -50,6 +57,7 @@ class Game:
         move = result.move
         if move:
             self.board.make_move(move[0], move[1], config.PLAYER_O)
+            self.last_move = (move[0], move[1])
             self.last_ai_time = result.time_ms
             self.last_ai_nodes = result.states_visited
             

@@ -80,6 +80,24 @@ class Board:
             return True, None # Hòa
         return False, None
 
+    def get_winning_line(self, player):
+        """Trả về danh sách tọa độ các quân cờ tạo nên chiến thắng, hoặc None"""
+        directions = [(0, 1), (1, 0), (1, 1), (1, -1)]
+        for r in range(self.size):
+            for c in range(self.size):
+                if self.grid[r][c] == player:
+                    for dr, dc in directions:
+                        coords = []
+                        for i in range(WIN_LENGTH):
+                            nr, nc = r + dr * i, c + dc * i
+                            if 0 <= nr < self.size and 0 <= nc < self.size and self.grid[nr][nc] == player:
+                                coords.append((nr, nc))
+                            else:
+                                break
+                        if len(coords) == WIN_LENGTH:
+                            return coords
+        return None
+
     def print_board(self):
         print("  " + " ".join([str(i) for i in range(self.size)]))
         for r in range(self.size):

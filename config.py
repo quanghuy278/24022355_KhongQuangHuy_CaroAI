@@ -11,9 +11,12 @@ PLAYER_X = 'X' # Người
 PLAYER_O = 'O' # Máy
 EMPTY = '.'
 
-# Màu sắc giao diện (Pygame)
-BG_COLOR = (245, 245, 220) # Màu nền (màu gỗ nhạt)
-GRID_COLOR = (0, 0, 0)     # Màu đường kẻ
-X_COLOR = (200, 50, 50)    # Màu quân X
-O_COLOR = (50, 50, 200)    # Màu quân O
-TEXT_COLOR = (0, 0, 0)
+# Màu sắc giao diện (Pygame) - Cải tiến theme Bảng Gỗ
+BG_COLOR = (245, 222, 179)      # Màu nền ngoài lề (Wheat)
+BOARD_COLOR = (222, 184, 135)   # Màu nền bàn cờ (Burlywood)
+GRID_COLOR = (139, 69, 19)      # Màu đường kẻ lưới (Nâu sẫm)
+X_COLOR = (200, 40, 40)         # Màu quân X (Đỏ đậm)
+O_COLOR = (30, 80, 200)         # Màu quân O (Xanh biển)
+TEXT_COLOR = (60, 30, 10)       # Màu chữ (Nâu đen)
+BTN_COLOR = (160, 82, 45)       # Màu nút bấm (Sienna)
+BTN_HOVER_COLOR = (205, 133, 63) # Màu nút bấm khi hover (Peru)

@@ -17,16 +17,9 @@ Chạy lệnh sau để khởi động game:
 ```bash
 python main.py
 ```
-Giao diện Menu sẽ hiện ra cho phép bạn chọn thuật toán (Minimax hoặc Alpha-Beta) để bắt đầu. Theo mặc định, độ sâu tìm kiếm của AI là 3.
+Giao diện Menu sẽ hiện ra cho phép bạn chọn thuật toán (Minimax hoặc Alpha-Beta) cũng như tùy chỉnh độ sâu tìm kiếm bằng nút (+)/(-) để bắt đầu.
 
-**2. Tùy chỉnh tham số qua dòng lệnh (Command Line)**
-Bạn có thể cấu hình độ sâu tìm kiếm bằng tham số `--depth` (thuật toán AI vẫn được chọn ở màn hình Menu):
-```bash
-# Cấu hình độ sâu tìm kiếm là 2
-python main.py --depth 2
-```
-
-**3. Chạy chương trình kiểm thử (Benchmark)**
+**2. Chạy chương trình kiểm thử (Benchmark)**
 Đánh giá và so sánh thời gian, số lượng trạng thái duyệt giữa Minimax và Alpha-Beta:
 ```bash
 python -m src.benchmark.runner
